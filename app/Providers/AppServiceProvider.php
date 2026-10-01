@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Notification;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Compatibilidade com MySQL antigo (chaves utf8mb4 limitadas a 1000 bytes).
+        Schema::defaultStringLength(191);
         View::composer('*', function ($view) {
             if (auth()->check()) {
                 $unreadNotifications = Notification::where(function ($q) {
