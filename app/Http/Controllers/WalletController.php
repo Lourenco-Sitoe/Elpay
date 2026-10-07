@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Affiliate;
+use App\Models\Commission;
 use App\Models\Notification;
+use App\Models\PayoutAccount;
 use App\Models\User;
 use App\Models\Withdrawal;
+use App\Services\WebhookDispatcher;
 use App\Traits\LogsActivity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,14 +28,21 @@ class WalletController extends Controller
         } catch (\Throwable) {
         }
         $withdrawals = Withdrawal::where('user_id', $user->id)->latest()->paginate(10);
+        // Saldo pendente = saques pendentes + comissões pendentes (não pode sacar).
+        $pendingWithdrawals = (float) Withdrawal::where('user_id', $user->id)->where('status', 'pending')->sum('amount');
+        $pendingCommissions = 0;
+        try {
+            $pendingCommissions = (float) Commission::where('affiliate_id', $user->id)->where('status', 'pending')->sum('amount');
+        } catch (\Throwable) {
+        }
 
-        return view('wallet.index', compact('balance', 'affiliateBalance', 'withdrawals'));
+        return view('wallet.index', compact('balance', 'affiliateBalance', 'withdrawals', 'pendingWithdrawals', 'pendingCommissions'));
     }
 
     public function requestWithdrawal(): View
     {
         $balance = (float) (auth()->user()->balance ?? 0);
-        $accounts = \App\Models\PayoutAccount::where('user_id', auth()->id())->where('active', true)->get();
+        $accounts = PayoutAccount::where('user_id', auth()->id())->where('active', true)->get();
 
         return view('wallet.request', compact('balance', 'accounts'));
     }
@@ -43,7 +53,7 @@ class WalletController extends Controller
         $feePercent = (float) setting('withdrawal_fee_percent', 2);
 
         $data = $request->validate([
-            'amount' => 'required|numeric|min:' . $min,
+            'amount' => 'required|numeric|min:'.$min,
             'method' => 'required|in:mpesa,emola',
             'phone' => 'nullable|string|max:30',
             'payout_account_id' => 'nullable|exists:payout_accounts,id',
@@ -51,7 +61,7 @@ class WalletController extends Controller
 
         // Conta guardada preenche método + número.
         if (! empty($data['payout_account_id'])) {
-            $account = \App\Models\PayoutAccount::where('user_id', auth()->id())
+            $account = PayoutAccount::where('user_id', auth()->id())
                 ->where('active', true)->findOrFail($data['payout_account_id']);
             $data['method'] = $account->method === 'bank' ? $data['method'] : $account->method;
             $data['phone'] = $account->phone ?? $data['phone'];
@@ -86,14 +96,14 @@ class WalletController extends Controller
             Notification::create([
                 'user_id' => $user->id,
                 'title' => 'Levantamento solicitado',
-                'message' => 'Pedido de ' . $data['amount'] . ' MZN recebido. Taxa: ' . $fee . ' MZN.',
+                'message' => 'Pedido de '.$data['amount'].' MZN recebido. Taxa: '.$fee.' MZN.',
             ]);
         } catch (\Throwable) {
         }
 
-        $this->logActivity('withdrawal.requested', 'Levantamento #' . $withdrawal->id . ' de ' . $data['amount']);
+        $this->logActivity('withdrawal.requested', 'Levantamento #'.$withdrawal->id.' de '.$data['amount']);
 
-        \App\Services\WebhookDispatcher::dispatch('withdrawal.requested', [
+        WebhookDispatcher::dispatch('withdrawal.requested', [
             'withdrawal_id' => $withdrawal->id,
             'user_id' => $user->id,
             'amount' => $data['amount'],

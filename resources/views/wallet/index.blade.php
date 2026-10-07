@@ -8,10 +8,11 @@
 </div>
 
 <div class="grid sm:grid-cols-3 gap-5 mb-5">
-  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($balance ?? $available ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label">Saldo disponível</div></div>
-  <div class="t-card p-6"><div class="t-stat-num">{{ number_format($pending ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label">Pendente</div></div>
+  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($balance ?? $available ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label">Saldo disponível (podes sacar)</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ number_format(($pending ?? 0) ?: (($pendingWithdrawals ?? 0) + ($pendingCommissions ?? 0)), 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label">Saldo pendente (saques {{ number_format($pendingWithdrawals ?? 0, 2) }} + comissões {{ number_format($pendingCommissions ?? 0, 2) }})</div></div>
   <div class="t-card p-6"><div class="t-stat-num">{{ number_format($withdrawn ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label">Total levantado</div></div>
 </div>
+<p class="text-xs text-gray-500 mb-4">As taxas da plataforma são definidas pelo Admin (vês o valor no pedido de saque, mas não podes alterá-las).</p>
 
 <div class="t-card">
   <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 font-semibold text-[17px]">Extrato de saques</div>

@@ -17,6 +17,11 @@ window.ElpayTheme = {
         localStorage.setItem('elpay-theme', dark ? 'dark' : 'light');
         localStorage.setItem('elpay-theme-set', '1');
     },
+    set(theme) {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        localStorage.setItem('elpay-theme', theme === 'dark' ? 'dark' : 'light');
+        localStorage.setItem('elpay-theme-set', '1');
+    },
     get dark() {
         return document.documentElement.classList.contains('dark');
     },

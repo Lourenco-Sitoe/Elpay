@@ -29,21 +29,46 @@ class AffiliateController extends Controller
     {
         $product = Product::where('status', 'approved')->findOrFail($productId);
 
+        // Produtor não pode afiliar-se ao próprio produto (evita auto-comissão).
+        if ((int) $product->producer_id === (int) auth()->id()) {
+            return back()->withErrors(['product' => 'Não podes ser afiliado do teu próprio produto.']);
+        }
+
         $existing = Affiliate::where('user_id', auth()->id())->where('product_id', $product->id)->first();
         if ($existing) {
             return redirect()->route('affiliate.links')->with('info', 'Já é afiliado deste produto.');
         }
 
+        // Respeita o modo definido pelo produtor: automatic aprova de imediato, manual fica pendente.
+        $status = (($product->affiliation_mode ?? 'automatic') === 'manual') ? 'pending' : 'approved';
+
         $affiliate = Affiliate::create([
             'user_id' => auth()->id(),
             'product_id' => $product->id,
-            'affiliate_code' => strtoupper(Str::random(8)) . $product->id,
-            'status' => 'approved',
+            'affiliate_code' => strtoupper(Str::random(8)).$product->id,
+            'status' => $status,
         ]);
 
-        $this->logActivity('affiliate.joined', 'Aderiu ao produto: ' . $product->title);
+        $this->logActivity('affiliate.joined', 'Aderiu ao produto: '.$product->title." ({$status})");
 
-        return redirect()->route('affiliate.links')->with('success', 'Link de afiliado criado: ' . $affiliate->affiliate_code);
+        return redirect()->route('affiliate.links')->with(
+            'success',
+            $status === 'pending'
+                ? 'Pedido enviado. Aguarda aprovação do produtor. Código: '.$affiliate->affiliate_code
+                : 'Link de afiliado criado: '.$affiliate->affiliate_code
+        );
+    }
+
+    /** Regista um clique no link de afiliado (chamado nas páginas públicas com ?ref=). */
+    public static function trackClick(Product $product, string $code): void
+    {
+        try {
+            Affiliate::where('product_id', $product->id)
+                ->where('affiliate_code', $code)
+                ->where('status', 'approved')
+                ->increment('clicks');
+        } catch (\Throwable) {
+        }
     }
 
     public function myLinks(): View

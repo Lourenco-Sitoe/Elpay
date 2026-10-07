@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Middleware\ActiveMiddleware;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\AffiliateMiddleware;
+use App\Http\Middleware\KycMiddleware;
+use App\Http\Middleware\ProducerMiddleware;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,12 +24,13 @@ return Application::configure(basePath: dirname(__DIR__))
             $middleware->trustProxies(at: $proxies === '*' ? '*' : explode(',', $proxies));
         }
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'producer' => \App\Http\Middleware\ProducerMiddleware::class,
-            'affiliate' => \App\Http\Middleware\AffiliateMiddleware::class,
-            'kyc' => \App\Http\Middleware\KycMiddleware::class,
-            'active' => \App\Http\Middleware\ActiveMiddleware::class,
+            'admin' => AdminMiddleware::class,
+            'producer' => ProducerMiddleware::class,
+            'affiliate' => AffiliateMiddleware::class,
+            'kyc' => KycMiddleware::class,
+            'active' => ActiveMiddleware::class,
         ]);
+        $middleware->appendToGroup('web', [SetLocale::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

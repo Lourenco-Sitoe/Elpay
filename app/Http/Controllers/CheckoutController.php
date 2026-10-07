@@ -35,6 +35,7 @@ class CheckoutController extends Controller
         // Tracking de afiliado: ?ref=CODE -> cookie aff_{productId} 30 dias.
         if ($request->filled('ref')) {
             cookie()->queue(cookie('aff_' . $product->id, $request->get('ref'), 60 * 24 * 30));
+            \App\Http\Controllers\AffiliateController::trackClick($product, $request->get('ref'));
         }
         // UTM: guarda para atribuir à venda no process().
         if ($request->query('utm_source') || $request->query('utm_medium') || $request->query('utm_campaign')) {

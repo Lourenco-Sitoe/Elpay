@@ -24,9 +24,10 @@ nano .env   # APP_URL, DB_*, MAIL_*, MPESA_*/EMOLA_* quando houver
 composer install --no-dev --optimize-autoloader
 php artisan key:generate
 php artisan migrate --force
-php artisan db:seed --force   # só na 1ª vez (cria admin + settings)
+php artisan db:seed --class="Database\Seeders\ProductionSeeder" --force   # só na 1ª vez (admin + settings, sem demo)
 php artisan storage:link
 sudo chown -R www-data:www-data storage bootstrap/cache
+npm ci --ignore-scripts && npm run build   # ou corre ./deploy/deploy.sh que já inclui o build
 php artisan config:cache && php artisan route:cache && php artisan view:cache
 ```
 

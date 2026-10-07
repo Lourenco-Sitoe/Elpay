@@ -21,14 +21,22 @@ class ProductController extends Controller
             $query->where('producer_id', $user->id);
         }
         if (request()->filled('q')) {
-            $query->where('title', 'like', '%' . request('q') . '%');
+            $query->where('title', 'like', '%'.request('q').'%');
         }
-        if (in_array(request('status'), ['pending', 'approved', 'rejected'])) {
+        if (in_array(request('status'), ['draft', 'pending', 'approved', 'rejected', 'suspended', 'banned'])) {
             $query->where('status', request('status'));
+        }
+        if (request()->filled('category')) {
+            $query->where('category', request('category'));
         }
         $products = $query->paginate(12)->withQueryString();
 
-        return view('products.index', compact('products'));
+        return view('products.index', [
+            'products' => $products,
+            'categories' => ProductWizardController::CATEGORIES,
+            'statusLabels' => ProductWizardController::STATUS_LABELS,
+            'formats' => ProductWizardController::FORMATS,
+        ]);
     }
 
     public function create(): View
@@ -42,12 +50,22 @@ class ProductController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:1',
-            'type' => 'required|string|max:50',
+            'currency' => 'nullable|string|max:10',
+            'type' => 'required|in:course,ebook,file,link,app',
+            'category' => 'nullable|string|max:100',
             'commission_rate' => 'nullable|numeric|min:0|max:90',
+            'affiliation_mode' => 'nullable|in:automatic,manual',
+            'affiliation_rules' => 'nullable|string|max:5000',
             'file' => 'nullable|file|max:51200',
             'cover' => 'nullable|image|max:4096',
             'external_url' => 'nullable|url|max:2048',
+            'sales_page_url' => 'nullable|url|max:2048',
         ]);
+        $currency = $data['currency'] ?? 'MZN';
+        $min = ProductWizardController::PRICE_MIN[$currency] ?? 1;
+        if ((float) $data['price'] < $min) {
+            return back()->withErrors(['price' => "Mínimo de {$currency} ".number_format($min, 2).'.'])->withInput();
+        }
 
         $filePath = null;
         if ($request->hasFile('file')) {
@@ -63,20 +81,25 @@ class ProductController extends Controller
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
             'price' => $data['price'],
+            'currency' => $data['currency'] ?? 'MZN',
             'type' => $data['type'],
-            'commission_rate' => $data['commission_rate'] ?? 0,
+            'category' => $data['category'] ?? null,
+            'commission_rate' => $data['commission_rate'] ?? (float) setting('default_commission_rate', 10),
+            'affiliation_mode' => $data['affiliation_mode'] ?? 'automatic',
+            'affiliation_rules' => $data['affiliation_rules'] ?? null,
             'file_path' => $filePath,
             'cover' => $coverPath,
             'external_url' => $data['external_url'] ?? null,
-            'slug' => 'tmp-' . Str::random(8),
-            'status' => 'pending',
+            'sales_page_url' => $data['sales_page_url'] ?? null,
+            'slug' => 'tmp-'.Str::random(8),
+            'status' => 'draft',
         ]);
-        $product->slug = Str::slug($data['title']) . '-' . $product->id;
+        $product->slug = Str::slug($data['title']).'-'.$product->id;
         $product->save();
 
-        $this->logActivity('product.created', 'Produto criado: ' . $product->title);
+        $this->logActivity('product.created', 'Produto criado: '.$product->title);
 
-        return redirect()->route('products.index')->with('success', 'Produto criado e enviado para aprovação.');
+        return redirect()->route('products.wizard', [$product, 'overview'])->with('success', 'Produto cadastrado com sucesso');
     }
 
     public function show(Product $product): View
@@ -101,12 +124,22 @@ class ProductController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:1',
-            'type' => 'required|string|max:50',
+            'currency' => 'nullable|string|max:10',
+            'type' => 'required|in:course,ebook,file,link,app',
+            'category' => 'nullable|string|max:100',
             'commission_rate' => 'nullable|numeric|min:0|max:90',
+            'affiliation_mode' => 'nullable|in:automatic,manual',
+            'affiliation_rules' => 'nullable|string|max:5000',
             'file' => 'nullable|file|max:51200',
             'cover' => 'nullable|image|max:4096',
             'external_url' => 'nullable|url|max:2048',
+            'sales_page_url' => 'nullable|url|max:2048',
         ]);
+        $currency = $data['currency'] ?? $product->currency ?? 'MZN';
+        $min = ProductWizardController::PRICE_MIN[$currency] ?? 1;
+        if ((float) $data['price'] < $min) {
+            return back()->withErrors(['price' => "Mínimo de {$currency} ".number_format($min, 2).'.'])->withInput();
+        }
 
         if ($request->hasFile('file')) {
             $product->file_path = $request->file('file')->store('products', 'public');
@@ -118,13 +151,18 @@ class ProductController extends Controller
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
             'price' => $data['price'],
+            'currency' => $data['currency'] ?? $product->currency ?? 'MZN',
             'type' => $data['type'],
+            'category' => $data['category'] ?? $product->category,
             'commission_rate' => $data['commission_rate'] ?? $product->commission_rate,
+            'affiliation_mode' => $data['affiliation_mode'] ?? $product->affiliation_mode ?? 'automatic',
+            'affiliation_rules' => $data['affiliation_rules'] ?? $product->affiliation_rules,
             'external_url' => $data['external_url'] ?? null,
+            'sales_page_url' => $data['sales_page_url'] ?? $product->sales_page_url,
         ]);
         $product->save();
 
-        $this->logActivity('product.updated', 'Produto atualizado: ' . $product->title);
+        $this->logActivity('product.updated', 'Produto atualizado: '.$product->title);
 
         return redirect()->route('products.index')->with('success', 'Produto atualizado.');
     }
@@ -133,7 +171,7 @@ class ProductController extends Controller
     {
         $this->authorizeProduct($product);
         $product->delete();
-        $this->logActivity('product.deleted', 'Produto eliminado: ' . $product->title);
+        $this->logActivity('product.deleted', 'Produto eliminado: '.$product->title);
 
         return redirect()->route('products.index')->with('success', 'Produto eliminado.');
     }

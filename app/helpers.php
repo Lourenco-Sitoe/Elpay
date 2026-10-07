@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\Setting;
+
 if (! function_exists('formatMoney')) {
     function formatMoney($value, string $currency = 'MZN'): string
     {
         $n = (float) $value;
 
-        return number_format($n, 2, ',', ' ') . ' ' . $currency;
+        return number_format($n, 2, ',', ' ').' '.$currency;
     }
 }
 
@@ -18,7 +20,9 @@ if (! function_exists('statusBadge')) {
             'paid' => 'bg-blue-600 text-white',
             'pending' => 'bg-yellow-100 text-yellow-800',
             'open' => 'bg-yellow-100 text-yellow-800',
+            'draft' => 'bg-gray-100 text-gray-800',
             'inactive' => 'bg-gray-100 text-gray-800',
+            'suspended' => 'bg-orange-100 text-orange-800',
             'rejected' => 'bg-red-100 text-red-800',
             'banned' => 'bg-red-100 text-red-800',
             'cancelled' => 'bg-red-100 text-red-800',
@@ -29,7 +33,7 @@ if (! function_exists('statusBadge')) {
         ];
         $class = $colors[strtolower((string) $s)] ?? 'bg-gray-100 text-gray-800';
 
-        return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' . $class . '">' . e((string) $s) . '</span>';
+        return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium '.$class.'">'.e((string) $s).'</span>';
     }
 }
 
@@ -50,10 +54,10 @@ if (! function_exists('setting')) {
         }
 
         try {
-            $row = \App\Models\Setting::where('key', $key)->first();
+            $row = Setting::where('key', $key)->first();
 
             return $cache[$key] = $row ? $row->value : $default;
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return $default;
         }
     }

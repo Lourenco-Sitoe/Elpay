@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Affiliate;
 use App\Models\Commission;
-use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductAccess;
 use App\Models\Sale;
 use App\Models\User;
+use App\Models\Withdrawal;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -74,8 +76,8 @@ class DashboardController extends Controller
             }
         }
         try {
-            $topAffiliates = class_exists(\App\Models\Affiliate::class)
-                ? \App\Models\Affiliate::with('user')->orderByDesc('total_earned')->limit(5)->get()
+            $topAffiliates = class_exists(Affiliate::class)
+                ? Affiliate::with('user')->orderByDesc('total_earned')->limit(5)->get()
                 : collect();
         } catch (\Throwable) {
         }
@@ -95,7 +97,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    protected static function monthlyCollection(array $byMonth): \Illuminate\Support\Collection
+    protected static function monthlyCollection(array $byMonth): Collection
     {
         $names = [1 => 'Jan', 2 => 'Fev', 3 => 'Mar', 4 => 'Abr', 5 => 'Mai', 6 => 'Jun', 7 => 'Jul', 8 => 'Ago', 9 => 'Set', 10 => 'Out', 11 => 'Nov', 12 => 'Dez'];
         $out = [];
@@ -163,6 +165,25 @@ class DashboardController extends Controller
             $recentSales = (clone $detail)->latest()->limit(50)->get();
         } catch (\Throwable) {
         }
+        // Métricas de negócio do produtor (só dados próprios).
+        $customersCount = 0;
+        $affiliatesCount = 0;
+        $affiliateClicks = 0;
+        $pendingBalance = 0;
+        try {
+            $productIds = Product::where('producer_id', $userId)->pluck('id');
+            $customersCount = Sale::whereIn('product_id', $productIds)->where('status', 'paid')->distinct('buyer_id')->count('buyer_id');
+            $affiliatesCount = Affiliate::whereIn('product_id', $productIds)->where('status', 'approved')->count();
+            $affiliateClicks = (int) Affiliate::whereIn('product_id', $productIds)->sum('clicks');
+            $pendingWithdrawals = (float) Withdrawal::where('user_id', $userId)->where('status', 'pending')->sum('amount');
+            $pendingCommissions = class_exists(Commission::class)
+                ? (float) Commission::whereIn('product_id', $productIds)->where('status', 'pending')->sum('amount')
+                : 0;
+            $pendingBalance = $pendingWithdrawals + $pendingCommissions;
+        } catch (\Throwable) {
+        }
+        $conversions = (int) ($salesCount ?? 0);
+        $conversionRate = $affiliateClicks > 0 ? round(($conversions / max(1, $affiliateClicks)) * 100, 2) : 0;
 
         return view('dashboard.producer', [
             'products' => $products,
@@ -178,11 +199,19 @@ class DashboardController extends Controller
             'lostCount' => $lostCount ?? 0,
             'byWallet' => $byWallet,
             'daily' => collect($daily),
+            'customersCount' => $customersCount ?? 0,
+            'affiliatesCount' => $affiliatesCount ?? 0,
+            'affiliateClicks' => $affiliateClicks ?? 0,
+            'conversionRate' => $conversionRate ?? 0,
+            'pendingBalance' => $pendingBalance ?? 0,
             'stats' => [
-                'products' => $products instanceof \Illuminate\Support\Collection ? $products->count() : (int) Product::where('producer_id', $userId)->count(),
+                'products' => $products instanceof Collection ? $products->count() : (int) Product::where('producer_id', $userId)->count(),
                 'sales' => $salesCount,
                 'revenue' => round($revenue, 2),
                 'balance' => round((float) (auth()->user()->balance ?? 0), 2),
+                'pending' => round($pendingBalance ?? 0, 2),
+                'customers' => $customersCount ?? 0,
+                'affiliates' => $affiliatesCount ?? 0,
             ],
         ]);
     }
@@ -191,6 +220,7 @@ class DashboardController extends Controller
     private function periodRange(string $period): array
     {
         $to = now();
+
         return match ($period) {
             'today' => [now()->startOfDay(), $to, 1],
             '7' => [now()->subDays(6)->startOfDay(), $to, 7],
@@ -208,8 +238,8 @@ class DashboardController extends Controller
         $clicks = 0;
 
         try {
-            if (class_exists(\App\Models\Affiliate::class)) {
-                $links = \App\Models\Affiliate::with('product')->where('user_id', $userId)->get();
+            if (class_exists(Affiliate::class)) {
+                $links = Affiliate::with('product')->where('user_id', $userId)->get();
                 $salesCount = (int) $links->sum('total_sales');
             }
             if (class_exists(Commission::class)) {

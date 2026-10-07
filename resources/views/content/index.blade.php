@@ -12,7 +12,10 @@
 <div class="mt-3 space-y-2">
 @forelse(($m->lessons??[]) as $l)
 <div class="flex justify-between items-center border rounded-lg px-3 py-2 text-sm"><span><i class="bi {{ $l->kind==='video'?'bi-play-circle':($l->kind==='file'?'bi-file-earmark':'bi-text-paragraph') }}"></i> {{ $l->title }} <span class="text-gray-400">({{ $l->kind }}{{ $l->duration_minutes?' · '.$l->duration_minutes.'min':'' }})</span></span>
+<span class="flex gap-2 items-center">
+@if(Route::has('quizzes.index'))<a href="{{ route('quizzes.index', $l) }}" class="text-xs text-blue-600">Quizzes</a>@endif
 <form method="POST" action="{{ Route::has('content.lessons.destroy')?route('content.lessons.destroy',$l->id):'#' }}" class="inline" onsubmit="return confirm('Apagar aula?')">@csrf @method('DELETE')<button class="text-xs text-red-600">Apagar</button></form>
+</span>
 </div>
 @empty<p class="text-xs text-gray-400">Sem aulas neste módulo.</p>@endforelse
 </div>

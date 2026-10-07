@@ -50,6 +50,20 @@
   </div>
 </div>
 
+{{-- Negócio: clientes, afiliados, conversão, saldos --}}
+<div class="grid md:grid-cols-4 gap-5 mb-5">
+  <div class="t-card p-5"><div class="t-stat-num">{{ $customersCount ?? 0 }}</div><div class="t-stat-label">Clientes (meus produtos)</div></div>
+  <div class="t-card p-5"><div class="t-stat-num">{{ $affiliatesCount ?? 0 }}</div><div class="t-stat-label">Afiliados ativos · {{ $affiliateClicks ?? 0 }} cliques · {{ $conversionRate ?? 0 }}% conversão</div></div>
+  <div class="t-card p-5"><div class="t-stat-num green">{{ $fmt(auth()->user()->balance ?? 0) }}</div><div class="t-stat-label">Saldo disponível</div></div>
+  <div class="t-card p-5"><div class="t-stat-num">{{ $fmt($pendingBalance ?? 0) }}</div><div class="t-stat-label">Saldo pendente (saques + comissões)</div></div>
+</div>
+<div class="flex flex-wrap gap-2 mb-5 text-sm">
+  <a href="{{ route('producer.sales') }}" class="t-btn t-btn-sm">Ver vendas</a>
+  <a href="{{ route('producer.customers') }}" class="t-btn t-btn-sm">Ver clientes</a>
+  <a href="{{ route('producer.affiliates') }}" class="t-btn t-btn-sm">Gerir afiliados</a>
+  <a href="{{ route('wallet.index') }}" class="t-btn t-btn-sm">Financeiro</a>
+</div>
+
 {{-- Gráfico + carteiras --}}
 <div class="grid lg:grid-cols-3 gap-5 mb-5">
   <div class="t-card lg:col-span-2">

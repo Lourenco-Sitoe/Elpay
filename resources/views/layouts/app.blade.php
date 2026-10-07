@@ -9,16 +9,18 @@ if ($type === 'producer') {
             ['label' => 'Ferramentas', 'route' => 'tools.index', 'match' => 'tools'],
         ]],
         ['label' => 'Vendas', 'icon' => 'bi-cart', 'children' => [
-            ['label' => 'Minhas vendas', 'url' => (Route::has('producer.dashboard') ? route('producer.dashboard') : '#') . '#vendas', 'match' => '__none__'],
+            ['label' => 'Minhas vendas', 'route' => 'producer.sales', 'match' => 'producer.sales'],
+            ['label' => 'Clientes', 'route' => 'producer.customers', 'match' => 'producer.customers'],
             ['label' => 'Ganhos de parceria', 'route' => 'partners.earnings', 'match' => 'partners'],
+        ]],
+        ['label' => 'Afiliados', 'icon' => 'bi-diagram-3', 'children' => [
+            ['label' => 'Gerir afiliados', 'route' => 'producer.affiliates', 'match' => 'producer.affiliates'],
+            ['label' => 'Marketplace', 'route' => 'affiliate.marketplace', 'match' => 'affiliate.marketplace'],
+            ['label' => 'Meus links', 'route' => 'affiliate.links', 'match' => 'affiliate.links'],
         ]],
         ['label' => 'Carteira', 'icon' => 'bi-wallet2', 'children' => [
             ['label' => 'A minha carteira', 'route' => 'wallet.index', 'match' => 'wallet'],
             ['label' => 'Contas de saque', 'route' => 'payouts.accounts', 'match' => 'payouts'],
-        ]],
-        ['label' => 'Afiliação', 'icon' => 'bi-shop', 'children' => [
-            ['label' => 'Marketplace', 'route' => 'affiliate.marketplace', 'match' => 'affiliate.marketplace'],
-            ['label' => 'Meus links', 'route' => 'affiliate.links', 'match' => 'affiliate.links'],
         ]],
     ]];
 } elseif ($type === 'affiliate') {
@@ -26,6 +28,7 @@ if ($type === 'producer') {
         ['label' => 'Afiliação', 'icon' => 'bi-shop', 'children' => [
             ['label' => 'Marketplace', 'route' => 'affiliate.marketplace', 'match' => 'affiliate.marketplace'],
             ['label' => 'Meus links', 'route' => 'affiliate.links', 'match' => 'affiliate.links'],
+            ['label' => 'Materiais', 'route' => 'affiliate.materials', 'match' => 'affiliate.materials'],
             ['label' => 'Comissões', 'route' => 'affiliate.commissions', 'match' => 'affiliate.commissions'],
         ]],
         ['label' => 'Carteira', 'icon' => 'bi-wallet2', 'children' => [

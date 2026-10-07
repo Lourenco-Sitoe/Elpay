@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\ProductAccess;
 use App\Models\Sale;
 use App\Models\User;
+use App\Models\Withdrawal;
+use App\Services\Payments\PaymentGatewayManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -97,7 +99,7 @@ class ApiController extends Controller
             return response()->json(['message' => 'Não autenticado.'], 401);
         }
 
-        $items = \App\Models\ProductAccess::with('product')
+        $items = ProductAccess::with('product')
             ->where('user_id', $user->id)
             ->latest()
             ->paginate(20);
@@ -114,10 +116,10 @@ class ApiController extends Controller
         }
 
         if (in_array($user->type, ['producer', 'admin'], true)) {
-            $ids = \App\Models\Product::when($user->type !== 'admin', fn ($q) => $q->where('producer_id', $user->id))->pluck('id');
-            $base = \App\Models\Sale::whereIn('product_id', $ids)->where('status', 'paid');
+            $ids = Product::when($user->type !== 'admin', fn ($q) => $q->where('producer_id', $user->id))->pluck('id');
+            $base = Sale::whereIn('product_id', $ids)->where('status', 'paid');
             $month = (clone $base)->where('created_at', '>=', now()->subDays(30));
-            $refunded = \App\Models\Sale::whereIn('product_id', $ids)->whereIn('status', ['cancelled', 'refunded'])->where('created_at', '>=', now()->subDays(30));
+            $refunded = Sale::whereIn('product_id', $ids)->whereIn('status', ['cancelled', 'refunded'])->where('created_at', '>=', now()->subDays(30));
 
             return response()->json([
                 'sales_30d' => (clone $month)->count(),
@@ -128,8 +130,8 @@ class ApiController extends Controller
         }
 
         return response()->json([
-            'purchases' => \App\Models\Sale::where('buyer_id', $user->id)->where('status', 'paid')->count(),
-            'spent' => round(\App\Models\Sale::where('buyer_id', $user->id)->where('status', 'paid')->sum('final_price'), 2),
+            'purchases' => Sale::where('buyer_id', $user->id)->where('status', 'paid')->count(),
+            'spent' => round(Sale::where('buyer_id', $user->id)->where('status', 'paid')->sum('final_price'), 2),
             'balance' => round((float) ($user->balance ?? 0), 2),
         ]);
     }
@@ -142,9 +144,9 @@ class ApiController extends Controller
             return response()->json(['message' => 'Não autenticado.'], 401);
         }
 
-        $q = \App\Models\Sale::with(['product', 'buyer'])->latest();
+        $q = Sale::with(['product', 'buyer'])->latest();
         if (in_array($user->type, ['producer', 'admin'], true)) {
-            $ids = \App\Models\Product::when($user->type !== 'admin', fn ($qq) => $qq->where('producer_id', $user->id))->pluck('id');
+            $ids = Product::when($user->type !== 'admin', fn ($qq) => $qq->where('producer_id', $user->id))->pluck('id');
             $q->whereIn('product_id', $ids);
         } else {
             $q->where('buyer_id', $user->id);
@@ -162,7 +164,7 @@ class ApiController extends Controller
         }
 
         return response()->json(
-            \App\Models\Product::where('producer_id', $user->id)->latest()->paginate(20)
+            Product::where('producer_id', $user->id)->latest()->paginate(20)
         );
     }
 
@@ -174,13 +176,13 @@ class ApiController extends Controller
             return response()->json(['message' => 'Não autenticado.'], 401);
         }
 
-        $approved = \App\Models\Withdrawal::where('user_id', $user->id)->where('status', 'approved')->sum('amount');
+        $approved = Withdrawal::where('user_id', $user->id)->where('status', 'approved')->sum('amount');
 
         return response()->json([
             'available' => round((float) ($user->balance ?? 0), 2),
             'withdrawn' => round((float) $approved, 2),
             'total' => round((float) ($user->balance ?? 0) + (float) $approved, 2),
-            'history' => \App\Models\Withdrawal::where('user_id', $user->id)->latest()->paginate(15),
+            'history' => Withdrawal::where('user_id', $user->id)->latest()->paginate(15),
         ]);
     }
 
@@ -198,7 +200,7 @@ class ApiController extends Controller
         $min = (float) setting('min_withdrawal', 100);
         $feePercent = (float) setting('withdrawal_fee_percent', 2);
         $data = $request->validate([
-            'amount' => 'required|numeric|min:' . $min,
+            'amount' => 'required|numeric|min:'.$min,
             'method' => 'required|in:mpesa,emola',
             'phone' => 'required|string|max:30',
         ]);
@@ -209,7 +211,7 @@ class ApiController extends Controller
 
         $fee = round($data['amount'] * ($feePercent / 100), 2);
         $user->decrement('balance', $data['amount']);
-        $w = \App\Models\Withdrawal::create([
+        $w = Withdrawal::create([
             'user_id' => $user->id,
             'amount' => $data['amount'],
             'fee' => $fee,
@@ -239,6 +241,7 @@ class ApiController extends Controller
         ]);
 
         $product = Product::findOrFail($data['product_id']);
+        abort_if(($product->status ?? 'draft') !== 'approved', 404);
         $total = (float) $product->price;
 
         $sale = Sale::create([
@@ -256,15 +259,15 @@ class ApiController extends Controller
         ]);
 
         try {
-            $result = \App\Services\Payments\PaymentGatewayManager::driver()->initiate($sale, $buyer->phone ?? '');
+            $result = PaymentGatewayManager::driver()->initiate($sale, $buyer->phone ?? '');
         } catch (\Throwable $e) {
             $sale->delete();
 
-            return response()->json(['message' => 'Pagamento indisponível: ' . $e->getMessage()], 422);
+            return response()->json(['message' => 'Pagamento indisponível: '.$e->getMessage()], 422);
         }
 
         if (! $result->approved()) {
-            \App\Models\Payment::create([
+            Payment::create([
                 'sale_id' => $sale->id,
                 'amount' => $total,
                 'method' => $data['payment_method'],

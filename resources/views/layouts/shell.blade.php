@@ -118,7 +118,11 @@
                             <span class="block text-[12px] text-slate-500 dark:text-slate-400 max-w-[190px] truncate">{{ auth()->user()->email }}</span>
                         </span>
                         <span class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg overflow-hidden">
+                            @if(!empty(auth()->user()->avatar))
+                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}" class="w-10 h-10 rounded-full object-cover" alt="">
+                            @else
                             {{ mb_substr(auth()->user()->name ?? 'E', 0, 1) }}
+                            @endif
                         </span>
                     </button>
                     <div x-show="open" @click.outside="open=false" class="dropdown-panel absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden text-sm">
