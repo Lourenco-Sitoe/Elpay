@@ -38,15 +38,44 @@
                     <p class="px-6 pt-5 pb-2 text-[13px] font-medium text-slate-500 dark:text-slate-400">{{ $section['title'] }}</p>
                 @endif
                 @foreach(($section['items'] ?? []) as $item)
+                    @if(!empty($item['children']))
+                        @php
+                            $childActive = false;
+                            foreach (($item['children'] ?? []) as $ch) {
+                                $cm = $ch['match'] ?? $ch['route'] ?? '__none__';
+                                if (isset($ch['route']) && Route::has($ch['route']) && request()->routeIs($cm . '*')) { $childActive = true; break; }
+                            }
+                        @endphp
+                        <div x-data="{ open: {{ $childActive ? 'true' : 'false' }} }">
+                            <button @click="open = !open" class="w-full flex items-center gap-3 px-6 py-2.5 font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60">
+                                <i class="bi {{ $item['icon'] ?? 'bi-circle' }} text-[17px]"></i> {{ $item['label'] }}
+                                <i class="bi bi-chevron-down ml-auto text-xs text-slate-400 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                            </button>
+                            <div x-show="open" x-transition>
+                                @foreach(($item['children'] ?? []) as $child)
+                                    @php
+                                        $cmatch = $child['match'] ?? $child['route'] ?? '__none__';
+                                        $cactive = isset($child['route']) && Route::has($child['route']) && request()->routeIs($cmatch . '*');
+                                        $chref = $child['url'] ?? (isset($child['route']) && Route::has($child['route']) ? route($child['route'], $child['params'] ?? []) : '#');
+                                    @endphp
+                                    <a href="{{ $chref }}"
+                                       class="flex items-center gap-3 py-2.5 pr-6 font-medium {{ $cactive ? 'bg-green-600 text-white shadow-[0_2px_8px_rgba(22,138,69,.35)]' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60' }}"
+                                       style="padding-left:3.4rem">{{ $child['label'] }}</a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
                     @php
                         $match = $item['match'] ?? $item['route'] ?? '';
                         $active = isset($item['route']) && Route::has($item['route']) && (request()->routeIs($match . '*') || ($item['route'] === 'dashboard' && request()->routeIs('*.dashboard')));
+                        $href = $item['url'] ?? (isset($item['route']) && Route::has($item['route']) ? route($item['route'], $item['params'] ?? []) : '#');
                     @endphp
-                    <a href="{{ isset($item['route']) && Route::has($item['route']) ? route($item['route'], $item['params'] ?? []) : '#' }}"
+                    <a href="{{ $href }}"
                        class="flex items-center gap-3 px-6 py-2.5 font-medium {{ $active ? 'bg-green-600 text-white shadow-[0_2px_8px_rgba(22,138,69,.35)]' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60' }}">
-                        <i class="bi {{ $item['icon'] ?? 'bi-circle' }} text-[17px]"></i> {{ $item['label'] }}
-                        @if(!empty($item['badge']))<span class="ml-auto text-[11px] px-2 py-0.5 rounded-full {{ $active ? 'bg-white/25 text-white' : 'bg-green-600 text-white' }}">{{ $item['badge'] }}</span>@endif
-                    </a>
+                         <i class="bi {{ $item['icon'] ?? 'bi-circle' }} text-[17px]"></i> {{ $item['label'] }}
+                         @if(!empty($item['badge']))<span class="ml-auto text-[11px] px-2 py-0.5 rounded-full {{ $active ? 'bg-white/25 text-white' : 'bg-green-600 text-white' }}">{{ $item['badge'] }}</span>@endif
+                     </a>
+                    @endif
                 @endforeach
             @endforeach
             <div class="px-0 pt-2">

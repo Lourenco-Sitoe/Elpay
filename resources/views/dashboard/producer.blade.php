@@ -72,7 +72,7 @@
 </div>
 
 {{-- Vendas detalhadas --}}
-<div class="t-card">
+<div class="t-card" id="vendas" style="scroll-margin-top:90px">
   <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 font-semibold text-[17px]">Vendas Detalhadas</div>
   <div class="p-6">
     <form method="GET" class="grid md:grid-cols-2 gap-4 max-w-xl">

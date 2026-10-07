@@ -2,32 +2,43 @@
 $type = auth()->user()->type ?? 'client';
 $menu = [['items' => [['label' => 'Dashboard', 'icon' => 'bi-speedometer2', 'route' => 'dashboard']]]];
 if ($type === 'producer') {
-    $menu[] = ['title' => 'Vender', 'items' => [
-        ['label' => 'Meus produtos', 'icon' => 'bi-box', 'route' => 'products.index', 'match' => 'products'],
-        ['label' => 'Ferramentas', 'icon' => 'bi-tools', 'route' => 'tools.index', 'match' => 'tools'],
-        ['label' => 'Cupons', 'icon' => 'bi-ticket', 'route' => 'coupons.index', 'match' => 'coupons'],
-    ]];
-    $menu[] = ['title' => 'Ganhos', 'items' => [
-        ['label' => 'Carteira', 'icon' => 'bi-wallet2', 'route' => 'wallet.index', 'match' => 'wallet'],
-        ['label' => 'Contas de saque', 'icon' => 'bi-bank', 'route' => 'payouts.accounts', 'match' => 'payouts'],
-        ['label' => 'Ganhos de parceria', 'icon' => 'bi-people', 'route' => 'partners.earnings', 'match' => 'partners'],
-        ['label' => 'Marketplace', 'icon' => 'bi-shop', 'route' => 'affiliate.marketplace', 'match' => 'affiliate'],
-        ['label' => 'Meus links', 'icon' => 'bi-link-45deg', 'route' => 'affiliate.links'],
+    $menu[] = ['items' => [
+        ['label' => 'Produtos', 'icon' => 'bi-box', 'children' => [
+            ['label' => 'Meus produtos', 'route' => 'products.index', 'match' => 'products'],
+            ['label' => 'Cupons', 'route' => 'coupons.index', 'match' => 'coupons'],
+            ['label' => 'Ferramentas', 'route' => 'tools.index', 'match' => 'tools'],
+        ]],
+        ['label' => 'Vendas', 'icon' => 'bi-cart', 'children' => [
+            ['label' => 'Minhas vendas', 'url' => (Route::has('producer.dashboard') ? route('producer.dashboard') : '#') . '#vendas', 'match' => '__none__'],
+            ['label' => 'Ganhos de parceria', 'route' => 'partners.earnings', 'match' => 'partners'],
+        ]],
+        ['label' => 'Carteira', 'icon' => 'bi-wallet2', 'children' => [
+            ['label' => 'A minha carteira', 'route' => 'wallet.index', 'match' => 'wallet'],
+            ['label' => 'Contas de saque', 'route' => 'payouts.accounts', 'match' => 'payouts'],
+        ]],
+        ['label' => 'Afiliação', 'icon' => 'bi-shop', 'children' => [
+            ['label' => 'Marketplace', 'route' => 'affiliate.marketplace', 'match' => 'affiliate.marketplace'],
+            ['label' => 'Meus links', 'route' => 'affiliate.links', 'match' => 'affiliate.links'],
+        ]],
     ]];
 } elseif ($type === 'affiliate') {
-    $menu[] = ['title' => 'Afiliado', 'items' => [
-        ['label' => 'Marketplace', 'icon' => 'bi-shop', 'route' => 'affiliate.marketplace', 'match' => 'affiliate'],
-        ['label' => 'Meus links', 'icon' => 'bi-link-45deg', 'route' => 'affiliate.links'],
-        ['label' => 'Comissões', 'icon' => 'bi-percent', 'route' => 'affiliate.commissions'],
-        ['label' => 'Carteira', 'icon' => 'bi-wallet2', 'route' => 'wallet.index', 'match' => 'wallet'],
+    $menu[] = ['items' => [
+        ['label' => 'Afiliação', 'icon' => 'bi-shop', 'children' => [
+            ['label' => 'Marketplace', 'route' => 'affiliate.marketplace', 'match' => 'affiliate.marketplace'],
+            ['label' => 'Meus links', 'route' => 'affiliate.links', 'match' => 'affiliate.links'],
+            ['label' => 'Comissões', 'route' => 'affiliate.commissions', 'match' => 'affiliate.commissions'],
+        ]],
+        ['label' => 'Carteira', 'icon' => 'bi-wallet2', 'children' => [
+            ['label' => 'A minha carteira', 'route' => 'wallet.index', 'match' => 'wallet'],
+            ['label' => 'Contas de saque', 'route' => 'payouts.accounts', 'match' => 'payouts'],
+        ]],
     ]];
 } else {
-    $menu[] = ['title' => 'Cliente', 'items' => [
-        ['label' => 'Minhas compras', 'icon' => 'bi-bag', 'route' => 'client.dashboard'],
+    $menu[] = ['items' => [
         ['label' => 'Certificados', 'icon' => 'bi-award', 'route' => 'certificates.mine', 'match' => 'certificates'],
     ]];
 }
-$menu[] = ['title' => 'Conta', 'items' => [
+$menu[] = ['items' => [
     ['label' => 'Verificação KYC', 'icon' => 'bi-shield-check', 'route' => 'kyc.index', 'match' => 'kyc'],
     ['label' => 'Notificações', 'icon' => 'bi-bell', 'route' => 'notifications.index', 'match' => 'notifications'],
     ['label' => 'Suporte', 'icon' => 'bi-chat', 'route' => 'support.index', 'match' => 'support'],
