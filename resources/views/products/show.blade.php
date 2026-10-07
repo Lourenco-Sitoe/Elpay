@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ $product->title??'Produto' }} — Elpay</title>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#168a45">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 @vite(['resources/css/app.css'])

@@ -1,30 +1,49 @@
 @extends('layouts.admin')
 @section('content')
-<h2 class="font-bold text-xl mb-4">Admin Dashboard</h2>
-<div class="max-w-7xl mx-auto">
+@php $s = $stats ?? []; @endphp
+<div class="max-w-[1400px] mx-auto">
 @include('layouts.partials.flash')
-@php $s=$stats??[]; @endphp
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-@foreach([['Utilizadores',$s['users']??0,'bi-people','bg-blue-600'],['Produtos',$s['products']??0,'bi-box','bg-blue-600'],['Vendas',$s['sales']??0,'bi-cart','bg-amber-600'],['Receita (MT)',$s['revenue']??0,'bi-cash-coin','bg-purple-600']] as $c)
-<div class="bg-white rounded-xl shadow p-4 flex items-center gap-3"><span class="w-10 h-10 rounded-lg text-white flex items-center justify-center {{ $c[3] }}"><i class="bi {{ $c[2] }}"></i></span><div><div class="text-xs text-gray-500">{{ $c[0] }}</div><div class="font-bold text-lg">{{ $c[1] }}</div></div></div>
-@endforeach
+<h1 class="t-page-title mb-5">Administração</h1>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['users'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-people text-green-700"></i> Utilizadores</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['products'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-box text-green-700"></i> Produtos</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['sales'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cart text-green-700"></i> Vendas</div></div>
+  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($s['revenue'] ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cash-coin text-green-700"></i> Receita</div></div>
 </div>
-<div class="grid lg:grid-cols-2 gap-4 mb-6">
-<div class="bg-white rounded-xl shadow p-4"><h3 class="font-semibold mb-2">Vendas mensais</h3><canvas id="chSales"></canvas></div>
-<div class="bg-white rounded-xl shadow p-4"><h3 class="font-semibold mb-2">Receita mensal (MT)</h3><canvas id="chRev"></canvas></div>
+
+<div class="grid lg:grid-cols-2 gap-5 mb-5">
+  <div class="t-card">
+    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 font-semibold text-[17px]">Vendas mensais</div>
+    <div class="p-5"><div class="h-64"><canvas id="chSales"></canvas></div></div>
+  </div>
+  <div class="t-card">
+    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 font-semibold text-[17px]">Receita mensal (MZN)</div>
+    <div class="p-5"><div class="h-64"><canvas id="chRev"></canvas></div></div>
+  </div>
 </div>
-<div class="bg-white rounded-xl shadow p-4">
-<h3 class="font-semibold mb-3">Vendas recentes</h3>
-<div class="overflow-x-auto"><table class="w-full text-sm">
-<thead><tr class="text-left text-gray-500 border-b"><th class="py-2">ID</th><th>Produto</th><th>Valor</th><th>Estado</th><th>Data</th></tr></thead>
-<tbody>@forelse(($recentSales??[]) as $s)<tr class="border-b"><td>{{ $s->id }}</td><td>{{ $s->product->title ?? '-' }}</td><td>{{ number_format($s->final_price??0,2) }}</td><td>{!! statusBadge($s->status??'-') !!}</td><td>{{ $s->created_at }}</td></tr>@empty<tr><td colspan="5" class="py-4 text-center text-gray-400">Sem vendas.</td></tr>@endforelse</tbody>
-</table></div>
+
+<div class="t-card">
+  <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 font-semibold text-[17px]">Vendas recentes</div>
+  <div class="overflow-x-auto">
+    <table class="t-table">
+      <thead><tr><th>ID</th><th>Produto</th><th>Valor</th><th>Estado</th><th>Data</th></tr></thead>
+      <tbody>
+      @forelse(($recentSales ?? []) as $sale)
+        <tr><td>#{{ $sale->id }}</td><td>{{ $sale->product->title ?? '-' }}</td><td class="font-bold whitespace-nowrap">{{ number_format($sale->final_price ?? 0, 2) }} MZN</td><td>{!! statusBadge($sale->status ?? '-') !!}</td><td class="whitespace-nowrap">{{ $sale->created_at }}</td></tr>
+      @empty
+        <tr><td colspan="5" class="py-10 text-center text-slate-500">Sem vendas.</td></tr>
+      @endforelse
+      </tbody>
+    </table>
+  </div>
 </div>
 </div>
-@push('scripts' ?? 'x')@endpush
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-new Chart(document.getElementById('chSales'),{type:'bar',data:{labels:@json(($monthlySales??collect())->pluck('month')??[]),datasets:[{data:@json(($monthlySales??collect())->pluck('total')??[])}]},options:{plugins:{legend:{display:false}}}});
-new Chart(document.getElementById('chRev'),{type:'line',data:{labels:@json(($monthlySales??collect())->pluck('month')??[]),datasets:[{data:@json(($monthlySales??collect())->pluck('total')??[]),fill:true}]},options:{plugins:{legend:{display:false}}}});
+const labels = @json(($monthlySales ?? collect())->pluck('month') ?? []);
+const totals = @json(($monthlySales ?? collect())->pluck('total') ?? []);
+new Chart(document.getElementById('chSales'), { type: 'bar', data: { labels, datasets: [{ data: totals, backgroundColor: '#3b5bdb', borderRadius: 3 }] }, options: { plugins: { legend: { display: false } } } });
+new Chart(document.getElementById('chRev'), { type: 'line', data: { labels, datasets: [{ data: totals, fill: true, backgroundColor: 'rgba(22,138,69,.12)', borderColor: '#168a45', tension: .4 }] }, options: { plugins: { legend: { display: false } } } });
 </script>
 @endsection

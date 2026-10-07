@@ -20,7 +20,13 @@ class ProductController extends Controller
         if (($user->type ?? '') !== 'admin') {
             $query->where('producer_id', $user->id);
         }
-        $products = $query->paginate(12);
+        if (request()->filled('q')) {
+            $query->where('title', 'like', '%' . request('q') . '%');
+        }
+        if (in_array(request('status'), ['pending', 'approved', 'rejected'])) {
+            $query->where('status', request('status'));
+        }
+        $products = $query->paginate(12)->withQueryString();
 
         return view('products.index', compact('products'));
     }

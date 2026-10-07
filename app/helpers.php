@@ -13,9 +13,9 @@ if (! function_exists('statusBadge')) {
     function statusBadge($s): string
     {
         $colors = [
-            'active' => 'bg-blue-100 text-blue-800',
-            'approved' => 'bg-blue-100 text-blue-800',
-            'paid' => 'bg-blue-100 text-blue-800',
+            'active' => 'bg-green-600 text-white',
+            'approved' => 'bg-green-600 text-white',
+            'paid' => 'bg-green-600 text-white',
             'pending' => 'bg-yellow-100 text-yellow-800',
             'open' => 'bg-yellow-100 text-yellow-800',
             'inactive' => 'bg-gray-100 text-gray-800',
@@ -24,7 +24,7 @@ if (! function_exists('statusBadge')) {
             'cancelled' => 'bg-red-100 text-red-800',
             'refunded' => 'bg-gray-100 text-gray-800',
             'blocked' => 'bg-red-100 text-red-800',
-            'answered' => 'bg-blue-100 text-blue-800',
+            'answered' => 'bg-green-100 text-green-800',
             'closed' => 'bg-gray-100 text-gray-800',
         ];
         $class = $colors[strtolower((string) $s)] ?? 'bg-gray-100 text-gray-800';

@@ -4,7 +4,6 @@ $menu = [['items' => [['label' => 'Dashboard', 'icon' => 'bi-speedometer2', 'rou
 if ($type === 'producer') {
     $menu[] = ['title' => 'Vender', 'items' => [
         ['label' => 'Meus produtos', 'icon' => 'bi-box', 'route' => 'products.index', 'match' => 'products'],
-        ['label' => 'Pedidos', 'icon' => 'bi-cart', 'route' => 'producer.dashboard'],
         ['label' => 'Ferramentas', 'icon' => 'bi-tools', 'route' => 'tools.index', 'match' => 'tools'],
         ['label' => 'Cupons', 'icon' => 'bi-ticket', 'route' => 'coupons.index', 'match' => 'coupons'],
     ]];

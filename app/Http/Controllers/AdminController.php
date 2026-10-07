@@ -109,11 +109,31 @@ class AdminController extends Controller
     // ---- Sales ----
     public function sales(Request $request): View
     {
-        $sales = Sale::with(['product', 'buyer'])
-            ->when($request->status, fn ($q) => $q->where('status', $request->status))
-            ->latest()->paginate(15);
+        $query = Sale::with(['product', 'buyer']);
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(fn ($w) => $w->where('buyer_name', 'like', "%{$q}%")->orWhere('buyer_email', 'like', "%{$q}%")->orWhere('id', $q));
+        }
+        if ($request->filled('status') && in_array($request->status, ['pending', 'paid', 'cancelled', 'refunded'])) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('from')) {
+            $query->whereDate('created_at', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->whereDate('created_at', '<=', $request->to);
+        }
+        $sales = (clone $query)->latest()->paginate(15)->withQueryString();
 
-        return view('admin.sales', compact('sales'));
+        $base = Sale::query();
+        $totalCount = (clone $base)->count();
+        $paidCount = (clone $base)->where('status', 'paid')->count();
+        $failCount = (clone $base)->whereIn('status', ['cancelled', 'refunded'])->count();
+        $moved = (float) (clone $base)->sum('final_price');
+        $received = (float) (clone $base)->where('status', 'paid')->sum('final_price');
+        $lost = (float) (clone $base)->whereIn('status', ['cancelled', 'refunded'])->sum('final_price');
+
+        return view('admin.sales', compact('sales', 'totalCount', 'paidCount', 'failCount', 'moved', 'received', 'lost'));
     }
 
     public function saleCancel(Sale $sale): RedirectResponse
