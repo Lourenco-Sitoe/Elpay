@@ -9,9 +9,9 @@
 <h1 class="t-page-title mb-5">Dashboard</h1>
 
 <div class="grid md:grid-cols-3 gap-5 mb-5">
-  <div class="t-card p-6"><div class="t-stat-num">{{ $s['clicks'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cursor text-green-700"></i> Cliques</div></div>
-  <div class="t-card p-6"><div class="t-stat-num">{{ $s['conversions'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-check-circle text-green-700"></i> Conversões</div></div>
-  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($s['commissions'] ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-percent text-green-700"></i> Comissões</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['clicks'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cursor text-blue-700"></i> Cliques</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['conversions'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-check-circle text-blue-700"></i> Conversões</div></div>
+  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($s['commissions'] ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-percent text-blue-700"></i> Comissões</div></div>
 </div>
 
 <div class="t-card mb-5">
@@ -28,7 +28,7 @@
       @forelse(($recentCommissions ?? $recentSales ?? []) as $r)
         <tr><td>{{ $r->product->title ?? $r->sale->product->title ?? '-' }}</td><td class="font-bold whitespace-nowrap">{{ number_format($r->amount ?? 0, 2) }} MZN</td><td>{!! statusBadge($r->status ?? '-') !!}</td></tr>
       @empty
-        <tr><td colspan="3" class="py-10 text-center text-slate-500">Sem comissões ainda. <a class="text-green-700 font-semibold underline" href="{{ Route::has('affiliate.marketplace') ? route('affiliate.marketplace') : '#' }}">Ver marketplace</a></td></tr>
+        <tr><td colspan="3" class="py-10 text-center text-slate-500">Sem comissões ainda. <a class="text-blue-700 font-semibold underline" href="{{ Route::has('affiliate.marketplace') ? route('affiliate.marketplace') : '#' }}">Ver marketplace</a></td></tr>
       @endforelse
       </tbody>
     </table>
@@ -36,5 +36,5 @@
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>new Chart(document.getElementById('chA'), { type: 'line', data: { labels: @json(($monthlySales ?? collect())->pluck('month') ?? []), datasets: [{ data: @json(($monthlySales ?? collect())->pluck('total') ?? []), fill: true, backgroundColor: 'rgba(22,138,69,.12)', borderColor: '#168a45', tension: .4 }] }, options: { plugins: { legend: { display: false } } } });</script>
+<script>new Chart(document.getElementById('chA'), { type: 'line', data: { labels: @json(($monthlySales ?? collect())->pluck('month') ?? []), datasets: [{ data: @json(($monthlySales ?? collect())->pluck('total') ?? []), fill: true, backgroundColor: 'rgba(37,99,235,.12)', borderColor: '#2563eb', tension: .4 }] }, options: { plugins: { legend: { display: false } } } });</script>
 </x-app-layout>

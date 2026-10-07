@@ -24,14 +24,14 @@
       @if(!empty($p->cover))
         <img src="{{ asset('storage/' . $p->cover) }}" class="t-cover" alt="">
       @else
-        <div class="t-cover bg-gradient-to-br from-green-100 to-emerald-100 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style="height:11rem"><i class="bi bi-box text-5xl text-green-600/50"></i></div>
+        <div class="t-cover bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style="height:11rem"><i class="bi bi-box text-5xl text-blue-600/50"></i></div>
       @endif
     </div>
     <div class="p-4 flex-1 flex flex-col">
       <h3 class="font-bold leading-snug">{{ $p->title }}</h3>
       <div class="mt-auto pt-3 space-y-1" style="margin-top:.9rem">
-        <p class="text-sm text-slate-600 dark:text-slate-300">Preço do Produto: <b class="text-green-700">{{ number_format($p->price ?? 0, 2) }} MZN</b></p>
-        <p class="text-sm text-slate-600 dark:text-slate-300">Receba até <b class="text-green-700">{{ $p->commission_rate ?? 0 }}% por venda</b></p>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Preço do Produto: <b class="text-blue-700">{{ number_format($p->price ?? 0, 2) }} MZN</b></p>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Receba até <b class="text-blue-700">{{ $p->commission_rate ?? 0 }}% por venda</b></p>
         <form method="POST" action="{{ Route::has('affiliate.join') ? route('affiliate.join', $p->id) : '#' }}">@csrf<button class="t-btn t-btn-sm w-full justify-center mt-2">Promover</button></form>
       </div>
     </div>

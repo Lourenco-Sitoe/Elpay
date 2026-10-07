@@ -18,7 +18,7 @@
           <td><button onclick="navigator.clipboard.writeText('{{ $url }}');this.innerHTML='<i class=&quot;bi bi-check&quot;></i> Copiado!'" class="t-btn t-btn-sm"><i class="bi bi-clipboard"></i> Copiar</button></td>
         </tr>
       @empty
-        <tr><td colspan="3" class="py-10 text-center text-slate-500">Sem links. Vai ao <a class="underline text-green-700 font-semibold" href="{{ Route::has('affiliate.marketplace') ? route('affiliate.marketplace') : '#' }}">marketplace</a>.</td></tr>
+        <tr><td colspan="3" class="py-10 text-center text-slate-500">Sem links. Vai ao <a class="underline text-blue-700 font-semibold" href="{{ Route::has('affiliate.marketplace') ? route('affiliate.marketplace') : '#' }}">marketplace</a>.</td></tr>
       @endforelse
       </tbody>
     </table>

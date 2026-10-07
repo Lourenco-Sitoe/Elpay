@@ -6,10 +6,10 @@
 <h1 class="t-page-title mb-5">Administração</h1>
 
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
-  <div class="t-card p-6"><div class="t-stat-num">{{ $s['users'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-people text-green-700"></i> Utilizadores</div></div>
-  <div class="t-card p-6"><div class="t-stat-num">{{ $s['products'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-box text-green-700"></i> Produtos</div></div>
-  <div class="t-card p-6"><div class="t-stat-num">{{ $s['sales'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cart text-green-700"></i> Vendas</div></div>
-  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($s['revenue'] ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cash-coin text-green-700"></i> Receita</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['users'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-people text-blue-700"></i> Utilizadores</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['products'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-box text-blue-700"></i> Produtos</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $s['sales'] ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cart text-blue-700"></i> Vendas</div></div>
+  <div class="t-card p-6"><div class="t-stat-num green">{{ number_format($s['revenue'] ?? 0, 2) }} MZN</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-cash-coin text-blue-700"></i> Receita</div></div>
 </div>
 
 <div class="grid lg:grid-cols-2 gap-5 mb-5">
@@ -44,6 +44,6 @@
 const labels = @json(($monthlySales ?? collect())->pluck('month') ?? []);
 const totals = @json(($monthlySales ?? collect())->pluck('total') ?? []);
 new Chart(document.getElementById('chSales'), { type: 'bar', data: { labels, datasets: [{ data: totals, backgroundColor: '#3b5bdb', borderRadius: 3 }] }, options: { plugins: { legend: { display: false } } } });
-new Chart(document.getElementById('chRev'), { type: 'line', data: { labels, datasets: [{ data: totals, fill: true, backgroundColor: 'rgba(22,138,69,.12)', borderColor: '#168a45', tension: .4 }] }, options: { plugins: { legend: { display: false } } } });
+new Chart(document.getElementById('chRev'), { type: 'line', data: { labels, datasets: [{ data: totals, fill: true, backgroundColor: 'rgba(37,99,235,.12)', borderColor: '#2563eb', tension: .4 }] }, options: { plugins: { legend: { display: false } } } });
 </script>
 @endsection

@@ -11,14 +11,14 @@
 </div>
 
 <div class="grid md:grid-cols-3 gap-5 mb-5">
-  <div class="t-card p-6"><div class="t-stat-num">{{ $totalCount ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-receipt text-green-700"></i> Total de transações</div></div>
-  <div class="t-card p-6"><div class="t-stat-num green">{{ $paidCount ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-check-circle text-green-700"></i> Com sucesso</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">{{ $totalCount ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-receipt text-blue-700"></i> Total de transações</div></div>
+  <div class="t-card p-6"><div class="t-stat-num green">{{ $paidCount ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-check-circle text-blue-700"></i> Com sucesso</div></div>
   <div class="t-card p-6"><div class="t-stat-num red">{{ $failCount ?? 0 }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-x-circle text-red-500"></i> Com falha</div></div>
 </div>
 <div class="grid md:grid-cols-3 gap-5 mb-5">
-  <div class="t-card p-6"><div class="t-stat-num">MZN {{ number_format($moved ?? 0, 2) }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-wallet2 text-green-700"></i> Valor movimentado</div></div>
-  <div class="t-card p-6"><div class="t-stat-num green">MZN {{ number_format($received ?? 0, 2) }}</div><div class="t-stat-div"></div><div class="t-stat-label"><span class="text-green-700 font-bold">$</span> Total recebido</div></div>
-  <div class="t-card p-6"><div class="t-stat-num red">MZN {{ number_format($lost ?? 0, 2) }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-graph-down-arrow text-green-700"></i> Total perdido</div></div>
+  <div class="t-card p-6"><div class="t-stat-num">MZN {{ number_format($moved ?? 0, 2) }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-wallet2 text-blue-700"></i> Valor movimentado</div></div>
+  <div class="t-card p-6"><div class="t-stat-num green">MZN {{ number_format($received ?? 0, 2) }}</div><div class="t-stat-div"></div><div class="t-stat-label"><span class="text-blue-700 font-bold">$</span> Total recebido</div></div>
+  <div class="t-card p-6"><div class="t-stat-num red">MZN {{ number_format($lost ?? 0, 2) }}</div><div class="t-stat-div"></div><div class="t-stat-label"><i class="bi bi-graph-down-arrow text-blue-700"></i> Total perdido</div></div>
 </div>
 
 <div class="t-card">
@@ -57,7 +57,7 @@
           </td>
           <td class="text-right whitespace-nowrap"><div class="font-bold">MZN {{ number_format($s->final_price ?? 0, 2) }}</div><div class="text-xs text-slate-500">{{ $s->buyer_phone ?? '' }}</div></td>
           <td class="text-right whitespace-nowrap">
-            <a href="#" class="inline-flex w-9 h-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-700 hover:border-green-600" title="Ver"><i class="bi bi-eye"></i></a>
+            <a href="#" class="inline-flex w-9 h-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-700 hover:border-blue-600" title="Ver"><i class="bi bi-eye"></i></a>
           </td>
         </tr>
       @empty

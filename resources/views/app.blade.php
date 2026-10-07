@@ -6,7 +6,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>Elpay App</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#168a45">
+<meta name="theme-color" content="#2563eb">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Elpay">
 <link rel="apple-touch-icon" href="/pwa-icons/icon-192.png">
@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@8/framework7-bundle.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <style>
-  :root { --f7-theme-color: #168a45; --f7-font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
+  :root { --f7-theme-color: #2563eb; --f7-font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
   .price { color: var(--f7-theme-color); font-weight: 800; }
   .product-img { height: 150px; object-fit: cover; width: 100%; border-radius: 12px 12px 0 0; }
   .product-fallback { height: 150px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#dbeafe,#eff6ff); border-radius: 12px 12px 0 0; font-size: 48px; color: #93c5fd; }
@@ -29,7 +29,7 @@
       <div class="navbar"><div class="navbar-bg"></div><div class="navbar-inner"><div class="title">⚡ Elpay</div><div class="right"><a href="/account/" class="link icon-only"><i class="icon bi bi-person-circle" style="font-size:22px"></i></a></div></div></div>
       <div class="page-content">
         <div class="block">
-          <div class="card" style="background:linear-gradient(135deg,#168a45,#12703a);color:#fff;border:none">
+          <div class="card" style="background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border:none">
             <div class="card-content card-content-padding">
               <b style="font-size:18px">Produtos digitais em MZN</b>
               <p style="opacity:.85">Paga com M-Pesa ou e-Mola. Acesso imediato.</p>
@@ -74,7 +74,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/framework7@8/framework7-bundle.min.js"></script>
 <script>
-var app = new Framework7({ el: '#app', name: 'Elpay', theme: 'auto', colors: { primary: '#168a45' },
+var app = new Framework7({ el: '#app', name: 'Elpay', theme: 'auto', colors: { primary: '#2563eb' },
   routes: [
     { path: '/product/:id/', template: document.getElementById('tpl-product').innerHTML, on: { pageInit: function(e, page){ loadProduct(page.route.params.id); } } },
     { path: '/checkout/:id/', template: document.getElementById('tpl-checkout').innerHTML, on: { pageInit: function(e, page){ loadCheckout(page.route.params.id); } } },
@@ -155,7 +155,7 @@ function loadCheckout(id){
       if(r.status === 201 || r.status === 202){
         const s = j.sale || {};
         document.getElementById('co-result').innerHTML = `
-          <div class="card" style="border:2px solid #168a45"><div class="card-content card-content-padding" style="text-align:center">
+          <div class="card" style="border:2px solid #2563eb"><div class="card-content card-content-padding" style="text-align:center">
           <div style="font-size:48px">✅</div><h3>${r.status===201 ? 'Pagamento recebido!' : 'Aguarda confirmação no telemóvel…'}</h3>
           <p>Compra #${s.id||''} · ${s.final_price ? money(s.final_price) : ''}</p>
           <a href="/account/" class="button button-fill">Ver minhas compras</a></div></div>`;

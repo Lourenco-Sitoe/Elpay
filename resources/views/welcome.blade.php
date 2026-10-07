@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Elpay — Vende e compra produtos digitais em Moçambique</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#168a45">
+<meta name="theme-color" content="#2563eb">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
 </header>
 
 <section class="relative overflow-hidden bg-slate-900 text-white">
-<div class="absolute inset-0 opacity-30" style="background:radial-gradient(600px 300px at 15% 20%,#168a4555,transparent),radial-gradient(500px 300px at 85% 80%,#1da45555,transparent)"></div>
+<div class="absolute inset-0 opacity-30" style="background:radial-gradient(600px 300px at 15% 20%,#2563eb55,transparent),radial-gradient(500px 300px at 85% 80%,#0ea5e955,transparent)"></div>
 <div class="relative max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
 <div>
 <span class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30"><i class="bi bi-lightning-charge-fill"></i> Feito para Moçambique · MZN</span>

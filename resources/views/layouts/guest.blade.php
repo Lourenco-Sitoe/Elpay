@@ -5,7 +5,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ config('app.name','Elpay') }}</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#168a45">
+<meta name="theme-color" content="#2563eb">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Elpay">
 <link rel="preconnect" href="https://fonts.googleapis.com">

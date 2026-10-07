@@ -7,7 +7,7 @@
     <title>{{ ($title ?? 'Painel') . ' · Elpay' }}</title>
 
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#168a45">
+    <meta name="theme-color" content="#2563eb">
     <link rel="apple-touch-icon" href="/pwa-icons/icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -59,7 +59,7 @@
                                         $chref = $child['url'] ?? (isset($child['route']) && Route::has($child['route']) ? route($child['route'], $child['params'] ?? []) : '#');
                                     @endphp
                                     <a href="{{ $chref }}"
-                                       class="flex items-center gap-3 py-2.5 pr-6 font-medium {{ $cactive ? 'bg-green-600 text-white shadow-[0_2px_8px_rgba(22,138,69,.35)]' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60' }}"
+                                       class="flex items-center gap-3 py-2.5 pr-6 font-medium {{ $cactive ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,.35)]' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60' }}"
                                        style="padding-left:3.4rem">{{ $child['label'] }}</a>
                                 @endforeach
                             </div>
@@ -71,9 +71,9 @@
                         $href = $item['url'] ?? (isset($item['route']) && Route::has($item['route']) ? route($item['route'], $item['params'] ?? []) : '#');
                     @endphp
                     <a href="{{ $href }}"
-                       class="flex items-center gap-3 px-6 py-2.5 font-medium {{ $active ? 'bg-green-600 text-white shadow-[0_2px_8px_rgba(22,138,69,.35)]' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60' }}">
+                       class="flex items-center gap-3 px-6 py-2.5 font-medium {{ $active ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,.35)]' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60' }}">
                          <i class="bi {{ $item['icon'] ?? 'bi-circle' }} text-[17px]"></i> {{ $item['label'] }}
-                         @if(!empty($item['badge']))<span class="ml-auto text-[11px] px-2 py-0.5 rounded-full {{ $active ? 'bg-white/25 text-white' : 'bg-green-600 text-white' }}">{{ $item['badge'] }}</span>@endif
+                         @if(!empty($item['badge']))<span class="ml-auto text-[11px] px-2 py-0.5 rounded-full {{ $active ? 'bg-white/25 text-white' : 'bg-blue-600 text-white' }}">{{ $item['badge'] }}</span>@endif
                      </a>
                     @endif
                 @endforeach
@@ -105,7 +105,7 @@
                     </button>
                     <div x-show="open" @click.outside="open=false" class="dropdown-panel absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                         <div class="p-3 border-b border-slate-100 dark:border-slate-700 font-semibold text-sm">Notificações ({{ $unreadCount ?? 0 }})
-                            <a href="{{ Route::has('notifications.index') ? route('notifications.index') : '#' }}" class="text-green-700 float-right font-normal">Ver todas</a></div>
+                            <a href="{{ Route::has('notifications.index') ? route('notifications.index') : '#' }}" class="text-blue-700 float-right font-normal">Ver todas</a></div>
                         @forelse(($unreadNotifications ?? collect())->take(5) as $n)
                             <div class="p-3 border-b border-slate-100 dark:border-slate-700 text-sm"><p class="font-medium">{{ $n->title }}</p><p class="text-xs text-slate-500">{{ \Illuminate\Support\Str::limit($n->message, 80) }}</p></div>
                         @empty<div class="p-4 text-sm text-slate-400 text-center">Sem notificações.</div>@endforelse
@@ -114,10 +114,10 @@
                 <div x-data="{ open:false }" class="relative">
                     <button @click="open=!open" class="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
                         <span class="hidden sm:block text-right leading-tight">
-                            <span class="block text-[13px] font-bold text-slate-900 dark:text-white max-w-[190px] truncate"><i class="bi bi-patch-check-fill text-green-600 text-xs"></i> {{ auth()->user()->name }}</span>
+                            <span class="block text-[13px] font-bold text-slate-900 dark:text-white max-w-[190px] truncate"><i class="bi bi-patch-check-fill text-blue-600 text-xs"></i> {{ auth()->user()->name }}</span>
                             <span class="block text-[12px] text-slate-500 dark:text-slate-400 max-w-[190px] truncate">{{ auth()->user()->email }}</span>
                         </span>
-                        <span class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-lg overflow-hidden">
+                        <span class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg overflow-hidden">
                             {{ mb_substr(auth()->user()->name ?? 'E', 0, 1) }}
                         </span>
                     </button>

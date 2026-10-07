@@ -50,7 +50,7 @@
       @if(!empty($p->cover))
         <img src="{{ asset('storage/' . $p->cover) }}" class="t-cover" alt="">
       @else
-        <div class="t-cover bg-gradient-to-br from-green-100 to-emerald-100 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style="height:11rem"><i class="bi bi-box text-5xl text-green-600/50"></i></div>
+        <div class="t-cover bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style="height:11rem"><i class="bi bi-box text-5xl text-blue-600/50"></i></div>
       @endif
       @if(($p->status ?? '') === 'approved')
         <span class="t-tag">Ativo</span>
@@ -70,7 +70,7 @@
     </div>
   </a>
 @empty
-  <div class="col-span-full t-card p-10 text-center text-slate-500">Sem produtos. <a class="text-green-700 font-semibold underline" href="{{ Route::has('products.create') ? route('products.create') : '#' }}">Criar o primeiro</a>.</div>
+  <div class="col-span-full t-card p-10 text-center text-slate-500">Sem produtos. <a class="text-blue-700 font-semibold underline" href="{{ Route::has('products.create') ? route('products.create') : '#' }}">Criar o primeiro</a>.</div>
 @endforelse
 </div>
 @if(isset($products) && method_exists($products, 'links'))<div class="mt-5">{{ $products->links() }}</div>@endif

@@ -17,7 +17,7 @@
     @if(!empty($p->product->cover))
       <img src="{{ asset('storage/' . $p->product->cover) }}" class="t-cover" alt="">
     @else
-      <div class="t-cover bg-gradient-to-br from-green-100 to-emerald-100 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style="height:11rem"><i class="bi bi-box text-5xl text-green-600/50"></i></div>
+      <div class="t-cover bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style="height:11rem"><i class="bi bi-box text-5xl text-blue-600/50"></i></div>
     @endif
     <div class="p-4 flex-1 flex flex-col">
       <h3 class="font-bold leading-snug">{{ $p->product->title ?? $p->title ?? 'Produto' }}</h3>
@@ -30,9 +30,9 @@
     </div>
   </div>
 @empty
-  <div class="col-span-full t-card p-10 text-center text-slate-500">Ainda não compraste nada. <a class="text-green-700 font-semibold underline" href="{{ url('/') }}#produtos">Explorar produtos</a></div>
+  <div class="col-span-full t-card p-10 text-center text-slate-500">Ainda não compraste nada. <a class="text-blue-700 font-semibold underline" href="{{ url('/') }}#produtos">Explorar produtos</a></div>
 @endforelse
 </div>
-<div class="mt-5 text-center"><a href="{{ Route::has('certificates.mine') ? route('certificates.mine') : '#' }}" class="text-sm text-green-700 font-semibold underline"><i class="bi bi-award"></i> Meus certificados</a></div>
+<div class="mt-5 text-center"><a href="{{ Route::has('certificates.mine') ? route('certificates.mine') : '#' }}" class="text-sm text-blue-700 font-semibold underline"><i class="bi bi-award"></i> Meus certificados</a></div>
 </div>
 </x-app-layout>
