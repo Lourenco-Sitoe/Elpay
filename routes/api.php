@@ -10,6 +10,12 @@ Route::get('/ping', fn () => response()->json(['ok' => true, 'time' => now()->to
 Route::prefix('v2')->name('api.v2.')->group(function () {
     Route::get('/produtos', [\App\Http\Controllers\Api\ProductController::class, 'index']);
     Route::get('/produtos/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
+
+    Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+        Route::get('/user', [\App\Http\Controllers\Api\AuthController::class, 'user']);
+    });
 });
 
 Route::post('/register', [ApiController::class, 'register']);
