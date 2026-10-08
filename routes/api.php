@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Route;
 // Health-check leve (usado pela app mobile para validar ligação e cookie anti-bot).
 Route::get('/ping', fn () => response()->json(['ok' => true, 'time' => now()->toIso8601String()]));
 
+// ---- v2 padronizada (envelope {success, message, data}) — convive com a v1 ----
+Route::prefix('v2')->name('api.v2.')->group(function () {
+    Route::get('/produtos', [\App\Http\Controllers\Api\ProductController::class, 'index']);
+    Route::get('/produtos/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
+});
+
 Route::post('/register', [ApiController::class, 'register']);
 Route::post('/login', [ApiController::class, 'login']);
 Route::get('/products', [ApiController::class, 'products']);
