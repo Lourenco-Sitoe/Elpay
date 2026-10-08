@@ -15,6 +15,10 @@ Route::prefix('v2')->name('api.v2.')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::get('/user', [\App\Http\Controllers\Api\AuthController::class, 'user']);
+
+        Route::post('/produtos', [\App\Http\Controllers\Api\ProductController::class, 'store']);
+        Route::put('/produtos/{id}', [\App\Http\Controllers\Api\ProductController::class, 'update']);
+        Route::delete('/produtos/{id}', [\App\Http\Controllers\Api\ProductController::class, 'destroy']);
     });
 });
 
