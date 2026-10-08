@@ -3,6 +3,9 @@
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Route;
 
+// Health-check leve (usado pela app mobile para validar ligação e cookie anti-bot).
+Route::get('/ping', fn () => response()->json(['ok' => true, 'time' => now()->toIso8601String()]));
+
 Route::post('/register', [ApiController::class, 'register']);
 Route::post('/login', [ApiController::class, 'login']);
 Route::get('/products', [ApiController::class, 'products']);
