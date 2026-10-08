@@ -190,7 +190,7 @@ class ProductWizardController extends Controller
             'type' => 'required|in:course,ebook,file,link,app',
             'delivery' => 'required|in:internal,external',
             'external_url' => 'nullable|url|max:2048',
-            'cover' => 'nullable|image|max:4096',
+            'cover' => ['nullable', 'image', 'max:'.config('uploads.max_image_kb')],
         ]);
         if ($request->hasFile('cover')) {
             $product->cover = $request->file('cover')->store('products', 'public');
@@ -265,7 +265,7 @@ class ProductWizardController extends Controller
     {
         $data = $request->validate([
             'material_name' => 'nullable|string|max:255',
-            'file' => 'nullable|file|max:512000',
+            'file' => ['nullable', 'file', 'max:'.config('uploads.max_file_kb')],
         ]);
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('products/materials', 'public');

@@ -30,7 +30,7 @@ class ProfileUpdateRequest extends FormRequest
             'specialty' => ['nullable', 'string', 'max:255'],
             'locale' => ['nullable', 'in:pt,en'],
             'theme' => ['nullable', 'in:light,dark'],
-            'avatar' => ['nullable', 'image', 'max:2048'],
+            'avatar' => ['nullable', 'image', 'max:'.config('uploads.max_image_kb')],
         ];
     }
 }

@@ -10,7 +10,6 @@ return [
         'capacitor://localhost',
         'http://localhost',
         'https://elpay.kesug.com',
-        'http://elpay.kesug.com',
     ],
 
     'allowed_origins_patterns' => [

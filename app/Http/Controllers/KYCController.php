@@ -33,9 +33,9 @@ class KYCController extends Controller
     {
         $data = $request->validate([
             'document_type' => 'required|in:bi,passport,dirigir',
-            'document_front' => 'required|file|mimes:jpg,jpeg,png,webp,pdf|max:4096',
-            'document_back' => 'required|file|mimes:jpg,jpeg,png,webp,pdf|max:4096',
-            'selfie' => 'required|image|max:4096',
+            'document_front' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:'.config('uploads.max_doc_kb')],
+            'document_back' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:'.config('uploads.max_doc_kb')],
+            'selfie' => ['required', 'image', 'max:'.config('uploads.max_image_kb')],
         ]);
 
         $payload = [
@@ -69,7 +69,7 @@ class KYCController extends Controller
         $kyc->save();
 
         $this->notifyKyc($kyc, 'approved');
-        $this->logActivity('kyc.approved', 'KYC #' . $id . ' aprovado.');
+        $this->logActivity('kyc.approved', 'KYC #'.$id.' aprovado.');
 
         return back()->with('success', 'KYC aprovado.');
     }
@@ -84,7 +84,7 @@ class KYCController extends Controller
         $kyc->save();
 
         $this->notifyKyc($kyc, 'rejected', $request->get('reason'));
-        $this->logActivity('kyc.rejected', 'KYC #' . $id . ' rejeitado.');
+        $this->logActivity('kyc.rejected', 'KYC #'.$id.' rejeitado.');
 
         return back()->with('success', 'KYC rejeitado.');
     }
@@ -106,8 +106,8 @@ class KYCController extends Controller
         try {
             Notification::create([
                 'user_id' => $kyc->user_id,
-                'title' => 'KYC ' . $status,
-                'message' => $comment ?? ('O seu KYC foi ' . $status . '.'),
+                'title' => 'KYC '.$status,
+                'message' => $comment ?? ('O seu KYC foi '.$status.'.'),
             ]);
         } catch (\Throwable) {
         }

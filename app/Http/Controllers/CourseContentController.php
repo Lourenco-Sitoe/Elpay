@@ -75,7 +75,7 @@ class CourseContentController extends Controller
             'kind' => 'required|in:video,text,file',
             'body' => 'nullable|string',
             'url' => 'nullable|url|max:2048',
-            'file' => 'nullable|file|max:102400',
+            'file' => ['nullable', 'file', 'max:'.config('uploads.max_file_kb')],
             'duration_minutes' => 'nullable|integer|min:1',
         ]);
         $path = $request->hasFile('file') ? $request->file('file')->store('lessons', 'public') : null;
@@ -101,7 +101,7 @@ class CourseContentController extends Controller
             'kind' => 'required|in:video,text,file',
             'body' => 'nullable|string',
             'url' => 'nullable|url|max:2048',
-            'file' => 'nullable|file|max:102400',
+            'file' => ['nullable', 'file', 'max:'.config('uploads.max_file_kb')],
             'duration_minutes' => 'nullable|integer|min:1',
         ]);
         if ($request->hasFile('file')) {

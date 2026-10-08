@@ -56,8 +56,8 @@ class ProductController extends Controller
             'commission_rate' => 'nullable|numeric|min:0|max:90',
             'affiliation_mode' => 'nullable|in:automatic,manual',
             'affiliation_rules' => 'nullable|string|max:5000',
-            'file' => 'nullable|file|max:51200',
-            'cover' => 'nullable|image|max:4096',
+            'file' => ['nullable', 'file', 'max:'.config('uploads.max_file_kb')],
+            'cover' => ['nullable', 'image', 'max:'.config('uploads.max_image_kb')],
             'external_url' => 'nullable|url|max:2048',
             'sales_page_url' => 'nullable|url|max:2048',
         ]);
@@ -130,8 +130,8 @@ class ProductController extends Controller
             'commission_rate' => 'nullable|numeric|min:0|max:90',
             'affiliation_mode' => 'nullable|in:automatic,manual',
             'affiliation_rules' => 'nullable|string|max:5000',
-            'file' => 'nullable|file|max:51200',
-            'cover' => 'nullable|image|max:4096',
+            'file' => ['nullable', 'file', 'max:'.config('uploads.max_file_kb')],
+            'cover' => ['nullable', 'image', 'max:'.config('uploads.max_image_kb')],
             'external_url' => 'nullable|url|max:2048',
             'sales_page_url' => 'nullable|url|max:2048',
         ]);
