@@ -32,7 +32,8 @@ Compress-Archive -Path "$pkg\public\*" -DestinationPath "$pkg\public.zip" -Force
 
 # 2. Subir por FTP (ftpupload.net, porta 21)
 #    Fiável: espelho ficheiro-a-ficheiro (o unzip no servidor falha por ownership).
-#    NÃO subir: vendor/ (inalterado), storage/ (dados do servidor), .env, index.php, .htaccess
+#    NÃO subir: vendor/ (inalterado), storage/ (dados do servidor), .env,
+#    index.php, .htaccess, bootstrap/cache/*.php (manifesto dev quebra o vendor --no-dev).
 $u = "USER:PASS"
 Get-ChildItem "$pkg\core" -Recurse -File | ForEach-Object {
   $rel = $_.FullName.Substring("$pkg\core\".Length) -replace "\\","/"
