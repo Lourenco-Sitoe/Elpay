@@ -1,6 +1,7 @@
 <x-app-layout>
-<x-slot name="header"><div class="flex justify-between items-center"><h2 class="font-semibold text-xl">Verificação KYC</h2><a href="{{ Route::has('kyc.create')?route('kyc.create'):'#' }}" class="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg">Nova submissão</a></div></x-slot>
+<x-slot name="header"><h2 class="font-semibold text-xl">Verificação KYC</h2></x-slot>
 <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8">@include('layouts.partials.flash')
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">Verificação KYC</h2><a href="{{ Route::has('kyc.create')?route('kyc.create'):'#' }}" class="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg">Nova submissão</a></div>
 <div class="bg-white shadow rounded-xl p-4 mb-4">Estado atual: <b>{{ $kyc->status ?? 'não submetido' }}</b>
 @if(!empty($kyc->rejection_reason))<p class="text-sm text-red-600 mt-1">Motivo: {{ $kyc->rejection_reason }}</p>@endif
 @if(!empty($kyc->admin_comment))<p class="text-sm text-gray-600 mt-1">Nota: {{ $kyc->admin_comment }}</p>@endif</div>

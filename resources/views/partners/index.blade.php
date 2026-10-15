@@ -1,6 +1,7 @@
 <x-app-layout>
-<x-slot name="header"><div class="flex justify-between items-center"><h2 class="font-semibold text-xl">Parceiros — {{ $product->title }}</h2><a href="{{ route('products.index') }}" class="text-sm text-blue-600 underline">Produtos</a></div></x-slot>
+<x-slot name="header"><h2 class="font-semibold text-xl">Parceiros</h2></x-slot>
 <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8">@include('layouts.partials.flash')
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">Parceiros — {{ $product->title }}</h2><a href="{{ route('products.index') }}" class="text-sm text-blue-600 underline">Produtos</a></div>
 <form method="POST" action="{{ route('partners.store',$product) }}" class="bg-white shadow rounded-xl p-4 mb-4 grid sm:grid-cols-3 gap-2">@csrf
 <input type="email" name="email" placeholder="Email do parceiro" required class="border rounded-lg px-3 py-2">
 <input type="number" step="0.1" min="1" max="90" name="share_percent" placeholder="% de participação" required class="border rounded-lg px-3 py-2">

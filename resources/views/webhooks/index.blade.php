@@ -1,6 +1,7 @@
 <x-app-layout>
-<x-slot name="header"><div class="flex justify-between items-center"><h2 class="font-semibold text-xl">Webhooks</h2><a href="{{ route('tools.index') }}" class="text-sm text-blue-600 underline">Ferramentas</a></div></x-slot>
+<x-slot name="header"><h2 class="font-semibold text-xl">Webhooks</h2></x-slot>
 <div class="py-6 max-w-5xl mx-auto sm:px-6 lg:px-8">@include('layouts.partials.flash')
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">Webhooks</h2><a href="{{ route('tools.index') }}" class="text-sm text-blue-600 underline">Ferramentas</a></div>
 <form method="POST" action="{{ route('webhooks.store') }}" class="bg-white shadow rounded-xl p-4 mb-4 grid sm:grid-cols-2 gap-2">@csrf
 <input name="name" placeholder="Nome (ex: Meu CRM)" required class="border rounded-lg px-3 py-2">
 <input name="url" placeholder="https://…" required class="border rounded-lg px-3 py-2">

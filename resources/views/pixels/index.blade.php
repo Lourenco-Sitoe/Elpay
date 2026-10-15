@@ -1,6 +1,7 @@
 <x-app-layout>
-<x-slot name="header"><div class="flex justify-between items-center"><h2 class="font-semibold text-xl">Meta Pixels</h2><a href="{{ route('tools.index') }}" class="text-sm text-blue-600 underline">Ferramentas</a></div></x-slot>
+<x-slot name="header"><h2 class="font-semibold text-xl">Meta Pixels</h2></x-slot>
 <div class="py-6 max-w-5xl mx-auto sm:px-6 lg:px-8">@include('layouts.partials.flash')
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">Meta Pixels</h2><a href="{{ route('tools.index') }}" class="text-sm text-blue-600 underline">Ferramentas</a></div>
 <form method="POST" action="{{ route('pixels.store') }}" class="bg-white shadow rounded-xl p-4 mb-4 grid sm:grid-cols-4 gap-2">@csrf
 <input name="name" placeholder="Nome (ex: Pixel principal)" required class="border rounded-lg px-3 py-2">
 <select name="platform" class="border rounded-lg px-3 py-2"><option value="facebook">Facebook/Instagram</option><option value="tiktok">TikTok</option><option value="google">Google</option></select>

@@ -1,6 +1,7 @@
 <x-app-layout>
-<x-slot name="header"><div class="flex justify-between items-center"><h2 class="font-semibold text-xl">{{ $lesson->title }}</h2><a href="{{ Route::has('learn.course')?route('learn.course',$product->id):'#' }}" class="text-sm text-blue-600 underline">Voltar ao curso</a></div></x-slot>
+<x-slot name="header"><h2 class="font-semibold text-xl">Aula</h2></x-slot>
 <div class="py-6 max-w-3xl mx-auto sm:px-6 lg:px-8">@include('layouts.partials.flash')
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">{{ $lesson->title }}</h2><a href="{{ Route::has('learn.course')?route('learn.course',$product->id):'#' }}" class="text-sm text-blue-600 underline">Voltar ao curso</a></div>
 <div class="bg-white shadow rounded-xl p-6">
 @if(($lesson->kind??'text')==='video' && !empty($lesson->url))
 <div class="aspect-video bg-black rounded-lg overflow-hidden mb-4"><iframe src="{{ $lesson->url }}" class="w-full h-full" allowfullscreen></iframe></div>

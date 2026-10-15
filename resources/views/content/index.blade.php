@@ -1,6 +1,7 @@
 <x-app-layout>
-<x-slot name="header"><div class="flex justify-between items-center"><h2 class="font-semibold text-xl">Conteúdo do curso: {{ $product->title }}</h2><a href="{{ Route::has('products.index')?route('products.index'):'#' }}" class="text-sm text-blue-600 underline">Voltar</a></div></x-slot>
+<x-slot name="header"><h2 class="font-semibold text-xl">Conteúdo do curso</h2></x-slot>
 <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8">@include('layouts.partials.flash')
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">Conteúdo: {{ $product->title }}</h2><a href="{{ Route::has('products.index')?route('products.index'):'#' }}" class="text-sm text-blue-600 underline">Voltar</a></div>
 <form method="POST" action="{{ Route::has('content.modules.store')?route('content.modules.store',$product->id):'#' }}" class="bg-white shadow rounded-xl p-4 mb-4 flex gap-2">@csrf
 <input name="title" required placeholder="Novo módulo…" class="flex-1 border rounded-lg px-3 py-2"><button class="px-4 py-2 bg-blue-600 text-white rounded-lg">Adicionar módulo</button></form>
 @forelse(($product->modules??[]) as $m)
