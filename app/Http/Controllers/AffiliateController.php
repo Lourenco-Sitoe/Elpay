@@ -74,8 +74,13 @@ class AffiliateController extends Controller
     public function myLinks(): View
     {
         $links = Affiliate::with('product')->where('user_id', auth()->id())->latest()->get();
+        // Produtos próprios (o produtor não pode ser afiliado de si mesmo,
+        // por isso aparecem aqui com links diretos, sem ?ref=).
+        $ownProducts = Product::where('producer_id', auth()->id())
+            ->where('status', 'approved')
+            ->latest()->get();
 
-        return view('affiliate.my-links', compact('links'));
+        return view('affiliate.my-links', compact('links', 'ownProducts'));
     }
 
     public function commissions(): View
