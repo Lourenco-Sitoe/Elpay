@@ -31,6 +31,14 @@ class KYCController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Uploads cortados pelo limite do servidor (post_max_size) chegam sem
+        // ficheiros nenhuns — explica em vez de devolver 3 erros "required".
+        if ($request->isMethod('post') && empty($request->allFiles()) && (int) ($request->server('CONTENT_LENGTH') ?? 0) > 0) {
+            return back()
+                ->withErrors(['document_front' => 'Os ficheiros são demasiado grandes para o servidor. Reduz o tamanho (máx. ' . number_format((config('uploads.max_doc_kb', 4096) / 1024), 0) . ' MB cada) e tenta de novo.'])
+                ->withInput();
+        }
+
         $data = $request->validate([
             'document_type' => 'required|in:bi,passport,dirigir',
             'document_front' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:'.config('uploads.max_doc_kb')],

@@ -10,6 +10,24 @@
 <div class="max-w-[1400px] mx-auto">
 @include('layouts.partials.flash')
 
+{{-- CTA KYC: sem verificação aprovada o produtor não opera --}}
+@php $kycStatus = auth()->user()->kyc->status ?? null; @endphp
+@if(in_array(auth()->user()->type ?? '', ['producer', 'affiliate'], true) && $kycStatus !== 'approved')
+<div class="mb-5 p-4 rounded-2xl border {{ $kycStatus === 'pending' ? 'bg-blue-50 border-blue-200 text-blue-800' : 'bg-amber-50 border-amber-200 text-amber-800' }} flex flex-wrap items-center gap-3">
+  <i class="bi bi-shield-check text-xl"></i>
+  <div class="text-sm">
+    @if($kycStatus === 'pending')
+      <strong>KYC em análise.</strong> Enviámos os teus documentos — serás notificado da decisão.
+    @elseif($kycStatus === 'rejected')
+      <strong>KYC recusado.</strong> Revê o motivo e submete de novo.
+    @else
+      <strong>Verifica a tua identidade</strong> para venderes e sacares fundos.
+    @endif
+  </div>
+  <a href="{{ route('kyc.index') }}" class="ml-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full">Abrir verificação KYC</a>
+</div>
+@endif
+
 {{-- Papel --}}
 <div class="t-pills mb-5">
   <span class="on" style="display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1.1rem;border-radius:.65rem;font-size:.9rem;font-weight:600"><i class="bi bi-shop"></i> Produtor</span>
